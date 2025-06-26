@@ -153,36 +153,3 @@ ros2 topic echo /ir_sensors	Просмотр данных с ИК-датчико
 ros2 launch nav2_bringup navigation_launch.py params_file:=~/ros2_ws/src/esp32_bridge/config/nav_param.yaml	Навигация с учетом ИК-датчиков
 Новые параметры в nav_param.yaml:
 
-yaml
-ir_sensors:
-  enabled: true
-  safety_distance: 0.15  # Минимальная дистанция до препятствия
-📊 Пример работы с ИК-датчиками
-python
-# Пример подписки на данные ИК-датчиков
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import Int32MultiArray
-
-class IRSubscriber(Node):
-    def __init__(self):
-        super().__init__('ir_subscriber')
-        self.subscription = self.create_subscription(
-            Int32MultiArray,
-            '/ir_sensors',
-            self.listener_callback,
-            10)
-        
-    def listener_callback(self, msg):
-        left, right = msg.data
-        self.get_logger().info(f'IR Sensors: L={left}, R={right}')
-
-def main(args=None):
-    rclpy.init(args=args)
-    node = IRSubscriber()
-    rclpy.spin(node)
-    node.destroy_node()
-    rclpy.shutdown()
-
-if __name__ == '__main__':
-    main()
